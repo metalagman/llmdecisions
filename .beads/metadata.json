@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "llmdecisions",
+  "project_id": "9458d54a-3c65-404b-a49c-883df3d0e263"
+}
