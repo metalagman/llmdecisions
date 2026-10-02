@@ -1,39 +1,40 @@
 # llmdecisions — proof of concept
 
-Экспериментальный CLI для проверки задержек, prompt caching и Fast mode.
-Сохранённые результаты — разовые прогоны, а не production benchmark или гарантия скорости.
+An experimental Go CLI for measuring inference latency, prompt caching, and
+Fast mode through the OpenAI Responses API. The saved results are individual
+runs, not a production benchmark or a speed guarantee.
 
-Go CLI для измерения задержек простого инференса через OpenAI Responses API.
-Модель по умолчанию: `gpt-5.6-luna`, `reasoning.effort=none`, streaming,
-`store=false`, без повторных попыток SDK. Никаких tools или agent loop.
+Defaults: `gpt-5.6-luna`, `reasoning.effort=none`, streaming, `store=false`,
+and no SDK retries. No tools or agent loop.
 
-## Результаты бенчмарков
+## Benchmark results
 
-Сохранённые прогоны выполнены **30 сентября 2026 года**: по восемь
-последовательных запросов на одних и тех же входах из
-[inputs.example.json](inputs.example.json). Reasoning — `none`, streaming включён,
-SDK retries — 0. Каждый прогон использовал новый transport: первое соединение
-новое, остальные семь — reused HTTP/2. Все 24 запроса завершились успешно.
+The saved runs were collected on **September 30, 2026**. Each configuration
+processed the same eight inputs from [inputs.example.json](inputs.example.json)
+sequentially, with reasoning set to `none`, streaming enabled, and zero retries.
+Each run used a fresh transport: one new connection followed by seven reused
+HTTP/2 connections. All 24 requests completed successfully.
 
-Все времена в таблицах — **миллисекунды**. TTFT означает время до первого
-непустого текстового события, TTFB — до первого байта ответа.
+All times in the tables are **milliseconds**. TTFT is time to the first nonempty
+text event; TTFB is time to the first response byte.
 
-| Прогон | Медиана TTFB | Медиана TTFT | Медиана total | Диапазон total | Cache hits | Reasoning tokens |
+| Run | Median TTFB | Median TTFT | Median total | Range total | Cache hits | Reasoning tokens |
 |---|---:|---:|---:|---:|---:|---:|
-| 5.6 Luna, исходная инструкция | 860.0 | 1328.7 | 1661.0 | 1166.4–2738.3 | 0/8 | 0 |
-| 5.6 Luna, расширенная инструкция + кэш | 876.0 | 1208.0 | 1676.9 | 1142.0–2416.5 | 7/8 | 0 |
-| 6 Luna fast, расширенная инструкция + кэш | 913.7 | 1070.3 | 1319.7 | 912.4–4369.1 | 7/8 | 0 |
+| 5.6 Luna, original instruction | 860.0 | 1328.7 | 1661.0 | 1166.4–2738.3 | 0/8 | 0 |
+| 5.6 Luna, expanded instruction + cache | 876.0 | 1208.0 | 1676.9 | 1142.0–2416.5 | 7/8 | 0 |
+| 6 Luna fast, expanded instruction + cache | 913.7 | 1070.3 | 1319.7 | 912.4–4369.1 | 7/8 | 0 |
 
-Исходный фиксированный текст содержал 963 токена по локальному `o200k_base`.
-Расширенный текст с примерами — 1591; API записал префикс размером 1594 токена.
-В каждом прогоне с кэшем первый запрос записал 1594 токена, следующие семь
-прочитали по 1594 без новых записей: 11158 из 13723 input tokens (81.3%).
-GPT-6 Luna подтвердил фактический `service_tier: fast` во всех восьми ответах.
-В старых прогонах фактический service tier не записывался; fast явно не запрашивался.
+The original fixed text contained 963 tokens according to local `o200k_base`
+tokenization. The expanded text contained 1591; the API cached a 1594-token prefix.
+In each cached run, the first request wrote 1594 tokens and the next seven read
+1594 tokens each without additional writes: 11158 of 13723 input tokens (81.3%).
+GPT-6 Luna confirmed the actual `service_tier: fast` in all eight responses.
+Earlier runs did not record the actual service tier and did not explicitly
+request Fast mode.
 
-### Сравнение каждого входа
+### Per-input comparison
 
-| Вход | 5.6 исходный TTFT | 5.6 кэш TTFT | 6 fast TTFT | 5.6 исходный total | 5.6 кэш total | 6 fast total |
+| Input | 5.6 baseline TTFT | 5.6 cached TTFT | 6 fast TTFT | 5.6 baseline total | 5.6 cached total | 6 fast total |
 |---|---:|---:|---:|---:|---:|---:|
 | feature_flags | 2308.2 | 1864.1 | 1883.6 | 2738.3 | 2416.5 | 2188.2 |
 | http_status | 1459.8 | 1331.0 | 951.7 | 1952.1 | 1800.2 | 1216.7 |
@@ -44,9 +45,9 @@ GPT-6 Luna подтвердил фактический `service_tier: fast` во
 | ignored_error | 1286.3 | 766.2 | 1256.8 | 1628.0 | 1142.0 | 1473.3 |
 | constant_value | 786.1 | 1158.2 | 660.9 | 1166.4 | 1553.6 | 926.7 |
 
-### Сеть и обработка API в GPT-6 Luna fast
+### Network and API processing: GPT-6 Luna fast
 
-| Вход | TTFB | TTFT | Processing API | Total | Cache read | Cache write |
+| Input | TTFB | TTFT | API processing | Total | Cache read | Cache write |
 |---|---:|---:|---:|---:|---:|---:|
 | feature_flags | 1750.5 | 1883.6 | 853 | 2188.2 | 0 | 1594 |
 | http_status | 786.3 | 951.7 | 437 | 1216.7 | 1594 | 0 |
@@ -57,50 +58,50 @@ GPT-6 Luna подтвердил фактический `service_tier: fast` во
 | ignored_error | 1137.3 | 1256.8 | 809 | 1473.3 | 1594 | 0 |
 | constant_value | 534.0 | 660.9 | 242 | 926.7 | 1594 | 0 |
 
-Первое соединение в GPT-6 fast: DNS **97.0 мс**, TCP **5.9 мс**, TLS **19.5 мс**.
-Для повторно используемых соединений эти этапы не выполнялись. TCP измеряет
-установку соединения с peer, а не задержку полного пути до сервера инференса.
-Processing API — заголовок `openai-processing-ms`; он не заменяет клиентское
-измерение total и не позволяет выделить чистую сеть вычитанием из TTFB.
+The first GPT-6 fast connection took **97.0 ms DNS**, **5.9 ms TCP**, and
+**19.5 ms TLS**. These phases did not run for reused connections. TCP measures
+connection establishment with the peer, not the entire path to the inference
+server. API processing comes from `openai-processing-ms`; it does not replace
+client total time. Subtracting it from TTFB does not isolate network latency.
 
-Медианы GPT-6 fast лучше предыдущего прогона с кэшем, однако `returned_error`
-имеет выброс: TTFT **4116.9 мс**, Processing API **3381 мс**.
-Это один проход на каждую конфигурацию, без повторов и рандомизации порядка.
-В первом сравнении изменились инструкция и кэширование, во втором — модель
-и service tier. Поэтому результаты не изолируют эффект кэша или Fast mode
-и не являются SLA либо оценкой хвостовых задержек. Повторный запуск делает
-платные API-вызовы и может дать другие значения.
+GPT-6 fast had better medians than the previous cached run, but `returned_error`
+was an outlier: **4116.9 ms TTFT**, with **3381 ms API processing**.
+There was only one pass per configuration, without repeated trials or randomized
+order. The first comparison changed the instruction and caching; the second
+changed the model and service tier. These results therefore do not isolate the
+effect of caching or Fast mode and do not establish an SLA or tail latency.
+Rerunning the commands makes billable API calls and may produce different results.
 
-### Исходные данные
+### Raw data
 
-| Прогон | Ответы и точные метрики | Все тайминги | Сравнение CSV |
+| Run | Responses and exact metrics | Full timings | Comparison CSV |
 |---|---|---|---|
-| 5.6 исходный | [JSONL](results/batch.jsonl) | [Отчёт](results/timings.txt) | — |
-| 5.6 с кэшем | [JSONL](results/cache-batch.jsonl) | [Отчёт](results/cache-timings.txt) | [CSV](results/cache-comparison.csv) |
-| 6 fast с кэшем | [JSONL](results/luna6-fast-batch.jsonl) | [Отчёт](results/luna6-fast-timings.txt) | [CSV](results/luna6-fast-comparison.csv) |
+| 5.6 baseline | [JSONL](results/batch.jsonl) | [Report](results/timings.txt) | — |
+| 5.6 with cache | [JSONL](results/cache-batch.jsonl) | [Report](results/cache-timings.txt) | [CSV](results/cache-comparison.csv) |
+| 6 fast with cache | [JSONL](results/luna6-fast-batch.jsonl) | [Report](results/luna6-fast-timings.txt) | [CSV](results/luna6-fast-comparison.csv) |
 
-Ответы сохранены без исправлений; измерения скорости не подтверждают
-качество классификации. Полные отчёты содержат сетевые интервалы, события SSE,
-интервалы между текстовыми delta, usage и request ID.
+Responses are preserved without corrections. Latency measurements do not validate
+classification quality. The full reports include network intervals, SSE events,
+text delta gaps, token usage, and request IDs.
 
-## Запуск
+## Quick start
 
-Нужен Go 1.26+. Запускайте из каталога проекта:
+Requires Go 1.26+. Run from the project directory:
 
 ```bash
 cp .env.example .env
-# Впишите OPENAI_API_KEY в .env.
+# Set OPENAI_API_KEY in .env.
 go run .
 ```
 
-Если `.env` уже существует, редактируйте его вместо копирования примера.
-Можно задать `OPENAI_API_KEY` в окружении: это значение имеет приоритет над `.env`,
-даже если оно пустое. Отсутствующий `.env` допустим; неверный синтаксис существующего
-файла — ошибка. `.env` и `.env.*` исключены из Git, кроме `.env.example`.
-Ключ и необработанные тела ошибок API не выводятся.
+If `.env` already exists, edit it rather than overwriting it with the example.
+You can also set `OPENAI_API_KEY` in the environment; it takes precedence over
+`.env`, including when empty. A missing `.env` is allowed; malformed syntax in
+an existing file is an error. Git ignores `.env` and `.env.*`, except
+`.env.example`. The key and raw API error bodies are not printed.
 
-По умолчанию отправляется полный `prompt.txt`, включая пример `INPUT`.
-Текст ответа идёт в stdout, тайминги и ошибки — в stderr.
+By default, the CLI sends all of `prompt.txt`, including its example `INPUT`.
+Response text goes to stdout; timings and errors go to stderr.
 
 ```bash
 go run . -prompt prompt.txt -timeout 60s
@@ -108,13 +109,14 @@ go build -o llmdecisions .
 ./llmdecisions -help
 ```
 
-Таймаут по умолчанию — 2 минуты на запрос, включая чтение stream.
-Ctrl+C отменяет выполнение. HTTP/stream errors, отказ модели, incomplete response,
-обрыв до завершения или ошибка записи дают ненулевой код возврата и частичные тайминги.
-`OPENAI_BASE_URL` не меняет endpoint: CLI обращается к `https://api.openai.com/v1/`.
-Обычные переменные HTTP(S)-proxy учитываются transport; URL и credentials proxy не печатаются.
+The default timeout is two minutes per request, including stream consumption.
+Ctrl+C cancels execution. HTTP/stream errors, refusals, incomplete responses,
+premature termination, and write failures produce a nonzero exit code and partial
+timings. `OPENAI_BASE_URL` does not override the endpoint:
+`https://api.openai.com/v1/`. The transport honors standard HTTP(S) proxy
+variables; proxy URLs and credentials are not printed.
 
-## Фиксированная инструкция, несколько входов
+## Fixed instruction, multiple inputs
 
 ```bash
 mkdir -p results
@@ -122,13 +124,13 @@ go run . -inputs inputs.example.json -timeout 60s \
   > results/batch.jsonl 2> results/timings.txt
 ```
 
-Инструкция берётся из `prompt.txt`: весь префикс перед разделителем `INPUT`, без
-демонстрационного входа. Она передаётся в поле Responses `instructions` неизменно
-для каждого запроса. Каждый объект из файла становится отдельным `input`.
-Свою фиксированную инструкцию можно задать через `-instructions fixed.txt`;
-в этом случае `prompt.txt` не требуется.
+The instruction is the prefix of `prompt.txt` before the `INPUT` delimiter,
+excluding the example input. It is sent unchanged in the Responses `instructions`
+field for each request. Each input object becomes a separate API input.
+Use `-instructions fixed.txt` to supply a custom instruction; in that case,
+`prompt.txt` is not required.
 
-Формат входного файла:
+Input file format:
 
 ```json
 [
@@ -148,32 +150,32 @@ go run . -inputs inputs.example.json -timeout 60s \
 ]
 ```
 
-`model` внутри протокола — `local-model`, как требует OUTPUT_SCHEMA из gist.
-Модель API по умолчанию — `gpt-5.6-luna`; изменить её можно через `-model`. Содержимое `input` должно соответствовать
-INPUT_SCHEMA. CLI до запроса проверяет формат списка, уникальные непустые `id`
-(до 128 байт) и непустой объект `input`; полную проверку схемы поручает модели
-согласно инструкции. Пустой или неверный список отклоняется до API-вызовов.
+The protocol's `model` is `local-model`, as required by the gist's OUTPUT_SCHEMA.
+The API model defaults to `gpt-5.6-luna`; override it with `-model`.
+The input must follow INPUT_SCHEMA. Before calling the API, the CLI validates
+list structure, unique nonempty IDs of up to 128 bytes, and nonempty input
+objects. Full schema validation is delegated to the model by the instruction.
+Empty or malformed lists are rejected before API calls.
 
-Запросы последовательны и используют один transport. Первое соединение может быть
-новым, следующие — повторно используемыми: это видно в каждом отчёте. После ошибки
-отдельного запроса следующие входы продолжают выполняться; Ctrl+C останавливает batch.
-Если хотя бы один вход завершился ошибкой, весь запуск возвращает ненулевой код.
+Requests run sequentially through one shared transport. Reports show connection
+reuse. A failed request does not prevent subsequent inputs from running;
+Ctrl+C stops the batch. Any failed input makes the batch exit with a nonzero code.
 
-Stdout содержит JSONL: одна строка на вход с `id`, `output` (строка с ответом модели),
-необязательным `error` и объектом `timings`. В нём:
+Stdout is JSONL: one record per input with `id`, `output` (the model's response
+as a string), optional `error`, and a `timings` object containing:
 
-- `metrics_ms`: временные отметки и интервалы; отсутствующие значения — `null`;
-- `network_phases`: отдельные DNS/TCP/TLS-попытки с началом, длительностью и результатом;
-- `metadata`: protocol, peer, reuse, proxy и разрешённые серверные заголовки;
-- `text_delta_count` и `inter_delta_gaps_ms`: число непустых текстовых событий и все промежутки;
-- `api_token_usage`: реальные input/output/cached/reasoning tokens и `cache_write_tokens`; отсутствующие поля — `null`;
-- `response_body_bytes_read`: объём прочитанных HTTP body bytes, включая SSE metadata.
+- `metrics_ms`: timestamps and durations; unavailable values are `null`.
+- `network_phases`: individual DNS/TCP/TLS attempts with start, duration, and outcome.
+- `metadata`: protocol, peer, reuse, proxy, selected server headers, and recorded model/tier.
+- `text_delta_count` and `inter_delta_gaps_ms`: nonempty text event count and all gaps.
+- `api_token_usage`: actual input/output/cached/reasoning tokens and `cache_write_tokens`; missing fields are `null`.
+- `response_body_bytes_read`: HTTP body bytes read, including SSE metadata.
 
-Stderr содержит полный отчёт для каждого `id`, затем сравнительную таблицу.
-Текст модели в batch буферизуется для формирования одной JSONL-строки; одиночный
-режим выводит текст по мере получения.
+Stderr contains a full report for each ID, followed by a comparison table.
+Batch mode buffers model text to form a JSONL record; single mode prints text
+as it arrives.
 
-## Эксперимент с кэшированием фиксированного префикса
+## Fixed-prefix caching experiment
 
 ```bash
 go run . -inputs inputs.example.json \
@@ -181,104 +183,105 @@ go run . -inputs inputs.example.json \
   > results/cache-batch.jsonl 2> results/cache-timings.txt
 ```
 
-`-cache-prefix` работает только в batch. В этом режиме фиксированная инструкция
-передаётся как `developer` message с явным `prompt_cache_breakpoint` на конце
-текстового блока, а меняющийся JSON input — следующим `user` message.
-Настройки запроса: `prompt_cache_options.mode=explicit`, `ttl=30m`.
-Так кэшируется выбранный фиксированный префикс, без записи изменяющегося суффикса.
-Обычный batch без флага продолжает использовать поле Responses `instructions`.
+`-cache-prefix` requires batch mode. The fixed instruction becomes a `developer`
+message with an explicit `prompt_cache_breakpoint` at the end of its text block.
+The variable JSON input follows as a `user` message. Request settings are
+`prompt_cache_options.mode=explicit` and `ttl=30m`. This caches the fixed prefix
+without writing the variable suffix. Batch mode without this flag continues
+to use the Responses `instructions` field.
 
-Для GPT-5.6 минимальный кэшируемый общий префикс — **1024 видимых токена**.
-Исходная фиксированная инструкция содержит 963 текстовых токена по `o200k_base`:
-общий input больше 1024, но его переменная часть уже различается между запросами.
-В `instructions.cache.txt` сохранён исходный протокол с тремя полезными примерами:
-игнорирование ошибки, возврат ошибки и неизвестный факт. Новый текст содержит
-1591 токен по тому же tokenizer. Этот подсчёт выполнен локально; служебные границы
-сообщений и полный отрендеренный контекст API сюда не входят. Go CLI не считает
-токены локально: для другой инструкции размер префикса следует проверить отдельно.
+For GPT-5.6, the minimum reusable common prefix is **1024 visible tokens**.
+The original instruction contains 963 text tokens according to `o200k_base`:
+total input exceeds 1024, but the variable part already differs between requests.
+[instructions.cache.txt](instructions.cache.txt) preserves the original protocol
+and adds three examples: ignoring an error, returning an error, and an unknown
+fact. Its text contains 1591 tokens by the same tokenizer. These local counts
+exclude message framing and the full rendered API context. The CLI does not
+count tokens locally; check the prefix length separately for custom instructions.
 
-`cached_input` — токены, **прочитанные** из кэша; `cache_write_tokens` — токены,
-**записанные** в него. API сам возвращает эти значения. Отсутствующее поле
-отмечается `null`/`unavailable`, а не нулём. Запись кэша тарифицируется отдельно;
-актуальные правила описаны в [документации OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching).
+`cached_input` counts tokens **read** from the cache; `cache_write_tokens` counts
+tokens **written** to it. Both come from the API. Missing fields are
+`null`/`unavailable`, rather than zero. Cache writes are billed separately;
+see the [OpenAI documentation](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-Результат сохранённого cache-эксперимента: первый запрос записал 1594 токена и
-прочитал 0; следующие семь прочитали по 1594 токена и записали 0. Всего прочитано
-11158 из 13723 input tokens (81.3%); все восемь запросов успешны, reasoning tokens
-нулевые. Полные метрики — `results/cache-batch.jsonl`, отчёт —
-`results/cache-timings.txt`, сравнение с исходным проходом —
-`results/cache-comparison.csv`. Исходные `results/batch.jsonl` и `results/timings.txt`
-сохранены без изменений.
+The saved caching experiment wrote 1594 tokens on the first request, then read
+1594 on each subsequent request without additional writes. All eight requests
+succeeded, with zero reasoning tokens. See the benchmark tables and linked
+artifacts above. The baseline artifacts are preserved.
 
-В одном проходе медиана времени до первого текста была 1328.7 мс для исходной
-инструкции и 1208.0 мс для расширенной. Это **не изолированная оценка ускорения от
-кэша**: изменились сама инструкция и время запуска, а задержки сети/сервера меняются.
-В частности, `numbers` с cache hit оказался медленнее своего исходного запроса.
-Добавленные примеры также меняют ответы: `handled_error` теперь получил `noul=0.01`
-вместо 0.98. Ответы обоих проходов сохранены без исправлений.
+Median TTFT was 1328.7 ms with the original instruction and 1208.0 ms with the
+expanded instruction. This is **not an isolated measurement of cache speedup**:
+the instruction and execution time changed, while network/server latency varies.
+For example, `numbers` was slower despite a cache hit. Added examples also
+changed responses: `handled_error` returned `noul=0.01` rather than 0.98.
+Both runs preserve the original responses without corrections.
 
-## Что именно измеряется
+## Timing definitions
 
-Все длительности в миллисекундах. Начало отсчёта — непосредственно перед вызовом SDK,
-после чтения конфигурации и prompt и создания клиента. Метрики с суффиксом `_at`,
-а также TTFB, первый stream event, первый текст, terminal event и total — от начала запроса.
+Durations are in milliseconds. Measurement starts immediately before the SDK call,
+after configuration/prompt loading and client creation. Metrics ending in `_at`,
+TTFB, first stream event, first text, terminal event, and total are measured
+from request start.
 
-| Метрика | Значение |
+| Metric | Meaning |
 |---|---|
-| `sdk_to_transport` | От вызова SDK до входа в transport, включая подготовку запроса SDK |
-| DNS/TCP/TLS | Наблюдаемые `httptrace` интервалы; несколько TCP-попыток показаны отдельно |
-| `connection_acquisition` | GetConn → GotConn, включая ожидание, DNS и handshakes |
-| `request_write` | GotConn → успешный WroteRequest, включая scheduling transport |
-| `headers_write_at`, `request_write_finished_at` | Отметки отправки заголовков и завершения попытки записи |
-| `ttfb` | До первого наблюдаемого байта HTTP-ответа |
-| `post_write_first_byte_wait` | Успешный WroteRequest → первый байт; включает сеть и серверное ожидание |
-| `response_headers_at` | До возврата HTTP response headers из RoundTrip |
-| `first_body_read_at`, `last_body_read_at` | До первого/последнего непустого чтения body |
-| `body_eof_at`, `body_closed_at` | До EOF и закрытия body, если наблюдались |
-| `first_stream_event` | До первого события, разобранного SDK |
-| `ttft_first_text` | До первого непустого `response.output_text.delta` |
-| `last_text_at`, `text_span` | До последнего текста; интервал первого → последнего текста |
-| `terminal_event` | До completed/failed/incomplete event |
-| `stream_duration` | Первое разобранное событие → завершение обработки/закрытия stream |
-| `total` | Весь запрос до завершения обработки и закрытия stream; печать отчёта исключена |
-| `provider_processing_ms` | Значение `openai-processing-ms`, сообщённое провайдером |
-| `server-timing` | Неинтерпретированный `Server-Timing`, если заголовок присутствует |
-| `inter_delta_min/mean/max/p50/p95_ms` | Клиентские интервалы текстовых событий; p50/p95 по nearest rank |
-| `output_tokens_per_total_second` | Output tokens / total seconds: средняя скорость за весь запрос |
+| `sdk_to_transport` | SDK call to transport entry, including SDK request preparation |
+| DNS/TCP/TLS | Observed `httptrace` intervals; multiple TCP attempts are listed separately |
+| `connection_acquisition` | GetConn → GotConn, including waiting, DNS, and handshakes |
+| `request_write` | GotConn → successful WroteRequest, including transport scheduling |
+| `headers_write_at`, `request_write_finished_at` | Header write and request write completion timestamps |
+| `ttfb` | Time to the first observed HTTP response byte |
+| `post_write_first_byte_wait` | Successful WroteRequest → first byte; includes network and server waiting |
+| `response_headers_at` | Time until RoundTrip returns response headers |
+| `first_body_read_at`, `last_body_read_at` | Time to the first/last nonempty body read |
+| `body_eof_at`, `body_closed_at` | Time to body EOF and closure, when observed |
+| `first_stream_event` | Time to the first event parsed by the SDK |
+| `ttft_first_text` | Time to the first nonempty `response.output_text.delta` |
+| `last_text_at`, `text_span` | Last text timestamp; interval from first to last text |
+| `terminal_event` | Time to a completed/failed/incomplete event |
+| `stream_duration` | First parsed event → end of stream handling/closure |
+| `total` | Entire request through stream handling and closure; excludes report printing |
+| `provider_processing_ms` | Provider-reported `openai-processing-ms` value |
+| `server-timing` | Raw `Server-Timing` header, if supplied |
+| `inter_delta_min/mean/max/p50/p95_ms` | Client text event gaps; p50/p95 use nearest rank |
+| `output_tokens_per_total_second` | Output tokens / total seconds, including startup and waiting |
 
-`unavailable` / `null` означает отсутствие наблюдения, а не ноль. Например, DNS/TCP/TLS
-не выполняются для reused connection. Stream закрывается после терминального события,
-поэтому `body_eof_at` может быть недоступен даже при успешном ответе.
+`unavailable`/`null` means no observation, not zero. DNS/TCP/TLS do not run for
+reused connections. The stream closes after the terminal event, so `body_eof_at`
+may be unavailable even for successful responses.
 
-Фазы могут пересекаться или уже входить в другие интервалы: их нельзя суммировать как
-«полную сетевую задержку». TTFB минус processing time не является чистой задержкой сети.
-Задержки промежуточных роутеров, server queue, prefill, GPU и отдельных токенов здесь не
-измеряются. Серверный processing header не обязательно описывает весь streaming response.
+Phases can overlap or be included in other intervals; adding them does not give
+complete network latency. TTFB minus processing time is not pure network latency.
+Intermediate router delays, server queueing, prefill, GPU time, and individual
+token generation are not measured here. The processing header does not
+necessarily describe the entire streaming response.
 
-Текстовый delta может содержать несколько токенов. SDK/HTTP buffering и scheduling
-влияют на интервалы между событиями; они не равны времени генерации отдельного токена.
-В одиночном режиме медленный stdout также влияет на последующие наблюдения.
-Token usage из API выводится отдельно от `usage=0`, которое запрашивает сам prompt.
+A text delta can contain multiple tokens. SDK/HTTP buffering and scheduling affect
+inter-event gaps, which are not per-token generation times. Slow stdout also
+affects subsequent observations in single mode. API token usage is recorded
+separately from the `usage=0` requested by the prompt's output protocol.
 
-## Prompt и сохранённый эксперимент
+## Prompt and saved experiment
 
-`prompt.txt` — точная копия [gist](https://gist.github.com/metalagman/228cea2aa86dd1118ce78723fdfc7513),
-полученная 30 сентября 2026 года. [Закреплённый raw файл](https://gist.githubusercontent.com/metalagman/228cea2aa86dd1118ce78723fdfc7513/raw/137f8ef050f667b0a21e78b11d74be546cbfcb29/gistfile1.txt):
-4564 байта, SHA256 `6138538d0baf361aedd33e7e5e259551f3dc4f7541932d0c0c2cb8a6e6a1b937`.
-API-запуск не загружает gist заново.
+[prompt.txt](prompt.txt) is an exact copy of the
+[gist](https://gist.github.com/metalagman/228cea2aa86dd1118ce78723fdfc7513),
+retrieved on September 30, 2026.
+[Pinned raw file](https://gist.githubusercontent.com/metalagman/228cea2aa86dd1118ce78723fdfc7513/raw/137f8ef050f667b0a21e78b11d74be546cbfcb29/gistfile1.txt):
+4564 bytes, SHA256 `6138538d0baf361aedd33e7e5e259551f3dc4f7541932d0c0c2cb8a6e6a1b937`.
+API runs do not download the gist again.
 
-`inputs.example.json` содержит восемь разных входов, сгенерированных один раз с seed 56:
-четыре примера кода, feature flags, HTTP status, inventory и числа. Они сохранены
-для повторения того же эксперимента.
+[inputs.example.json](inputs.example.json) contains eight inputs generated once
+with seed 56: four code examples, feature flags, HTTP status, inventory, and
+numbers. They are retained to reproduce the experiment.
 
-В `results/batch.jsonl` и `results/timings.txt` сохранён реальный восьмивходовый запуск:
-8 успешных запросов, один новый и семь reused HTTP/2 connections, first text
-786.122–2308.181 мс, total 1166.427–2738.271 мс. Cached input и reasoning tokens — 0
-во всех случаях. Это один проход, а не оценка распределения задержек по многим повторам.
-Ответы модели сохранены без исправления: в частности, `handled_error` получил `noul=0.98`
-несмотря на показанную проверку ошибки. Измерение задержек не подтверждает качество классификации.
+The baseline artifacts contain eight successful requests: one new and seven
+reused HTTP/2 connections, TTFT 786.122–2308.181 ms, and total time
+1166.427–2738.271 ms. Cached input and reasoning tokens were zero throughout.
+This is one pass, not a latency distribution across repeated trials.
+Responses are preserved unchanged: `handled_error` returned `noul=0.98` despite
+the error check in the input. Latency results do not validate classification quality.
 
-## Проверка
+## Verification
 
 ```bash
 go test ./...
@@ -287,20 +290,20 @@ go vet ./...
 go build ./...
 ```
 
-Тесты не обращаются к внешнему API: проверяют конфигурацию, payload, фиксированную
-инструкцию, SSE success/failure/refusal/EOF, отмену, ошибки записи, отсутствие retries,
-nullable timings, конкурентные callback-вызовы, batch continuation и отсутствие
-ключа в диагностике. Любой обычный одиночный или batch-запуск CLI делает реальные API-запросы.
-Дополнительно проверяется сериализация явной границы кэша и наличие/отсутствие/нулевые
-значения cache read/write usage; синтетические значения в тестах не считаются результатами эксперимента.
+Tests do not call the external API. They cover configuration, request payloads,
+fixed instructions, SSE success/failure/refusal/EOF, cancellation, write failures,
+no retries, nullable timings, concurrent trace callbacks, batch continuation,
+and secret-safe diagnostics. Normal single or batch CLI runs make real API calls.
+Tests also check explicit cache boundary serialization and present/missing/zero
+cache read/write values. Synthetic test values are not benchmark results.
 
-Документация: [модель и reasoning effort](https://developers.openai.com/api/docs/models/gpt-5.6-luna),
+References: [model and reasoning effort](https://developers.openai.com/api/docs/models/gpt-5.6-luna),
 [Responses streaming](https://developers.openai.com/api/docs/guides/streaming-responses),
-[серверные заголовки](https://developers.openai.com/api/reference/overview),
+[server headers](https://developers.openai.com/api/reference/overview),
 [OpenAI Go SDK](https://github.com/openai/openai-go),
-[Go HTTP tracing](https://go.dev/blog/http-tracing).
+and [Go HTTP tracing](https://go.dev/blog/http-tracing).
 
-## GPT-6 Luna с Fast mode
+## GPT-6 Luna with Fast mode
 
 ```sh
 go run . -model gpt-6-luna -service-tier fast \
@@ -308,9 +311,9 @@ go run . -model gpt-6-luna -service-tier fast \
   > results/luna6-fast-batch.jsonl 2> results/luna6-fast-timings.txt
 ```
 
-`-service-tier` принимает `auto`, `default`, `fast`, `priority`; без флага поле
-не отправляется. Reasoning остаётся `none`. Отчёт сохраняет запрошенную модель/режим
-и фактические `response_model`/`actual_service_tier` из завершающего ответа API.
-Отсутствующее значение обозначается как unavailable, а не как подтверждение Fast.
-Fast оплачивается дороже стандартного режима; подробности в
-[официальной документации](https://developers.openai.com/api/docs/models/gpt-6-luna).
+`-service-tier` accepts `auto`, `default`, `fast`, and `priority`. Without the flag,
+the field is omitted. Reasoning remains `none`. Reports record the requested
+model/tier and the actual `response_model`/`actual_service_tier` from the terminal
+API response. A missing value is marked unavailable, not treated as proof of Fast
+mode. Fast costs more than Standard processing; see the
+[official documentation](https://developers.openai.com/api/docs/models/gpt-6-luna).
