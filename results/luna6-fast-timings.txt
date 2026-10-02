@@ -1,0 +1,363 @@
+
+Case "feature_flags"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.652
+  connection_acquisition         122.751
+  request_write                  0.123
+  headers_write_at               123.522
+  request_write_finished_at      123.550
+  ttfb                           1750.514
+  post_write_first_byte_wait     1626.964
+  response_headers_at            1750.644
+  first_body_read_at             1750.701
+  last_body_read_at              2187.736
+  body_eof_at                    unavailable
+  body_closed_at                 2188.152
+  first_stream_event             1751.341
+  ttft_first_text                1883.641
+  last_text_at                   2164.802
+  text_span                      281.162
+  terminal_event                 2188.047
+  stream_duration                436.827
+  total                          2188.167
+  dns[1]_ms = 96.955; at_ms = 0.772; failed = false; address = ""
+  tcp_connect[1]_ms = 5.915; at_ms = 97.778; failed = false; address = "tcp 162.159.140.245:443"
+  tls[1]_ms = 19.481; at_ms = 103.796; failed = false; address = ""
+  provider_processing_ms         853.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_1a8e5c3fb1d140aeaf754709cb0ce8d1"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "false"
+  connection_was_idle            "false"
+  connection_idle_ms             "unavailable"
+  proxy_selected                 "false"
+  response_body_bytes_read       19454
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.018 / 5.623 / 131.065 / 0.032 / 39.347 (n=50)
+  api_token_usage                input=1699 output=55 cached_input=0 cache_write_tokens=1594 reasoning_output=0
+  output_tokens_per_total_second 25.135 (aggregate, includes startup/wait)
+
+Case "http_status"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.179
+  connection_acquisition         0.001
+  request_write                  0.146
+  headers_write_at               0.273
+  request_write_finished_at      0.335
+  ttfb                           786.291
+  post_write_first_byte_wait     785.956
+  response_headers_at            786.384
+  first_body_read_at             786.412
+  last_body_read_at              1216.137
+  body_eof_at                    unavailable
+  body_closed_at                 1216.712
+  first_stream_event             786.650
+  ttft_first_text                951.749
+  last_text_at                   1214.664
+  text_span                      262.916
+  terminal_event                 1216.567
+  stream_duration                430.066
+  total                          1216.717
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         437.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_4432059743c74c99aedc2013c95b75cd"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.555"
+  proxy_selected                 "false"
+  response_body_bytes_read       19454
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.011 / 5.258 / 161.345 / 0.022 / 36.967 (n=50)
+  api_token_usage                input=1708 output=55 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 45.204 (aggregate, includes startup/wait)
+
+Case "returned_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.135
+  connection_acquisition         0.001
+  request_write                  0.126
+  headers_write_at               0.216
+  request_write_finished_at      0.274
+  ttfb                           3998.490
+  post_write_first_byte_wait     3998.216
+  response_headers_at            3998.585
+  first_body_read_at             3998.648
+  last_body_read_at              4368.739
+  body_eof_at                    unavailable
+  body_closed_at                 4369.062
+  first_stream_event             3998.867
+  ttft_first_text                4116.855
+  last_text_at                   4333.875
+  text_span                      217.021
+  terminal_event                 4368.968
+  stream_duration                370.199
+  total                          4369.066
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         3381.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_f8a4a7302a9a40df956f2c4c81f98932"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.350"
+  proxy_selected                 "false"
+  response_body_bytes_read       15390
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.015 / 6.201 / 113.088 / 0.019 / 76.906 (n=35)
+  api_token_usage                input=1737 output=40 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 9.155 (aggregate, includes startup/wait)
+
+Case "numbers"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.144
+  connection_acquisition         0.001
+  request_write                  0.157
+  headers_write_at               0.237
+  request_write_finished_at      0.313
+  ttfb                           716.071
+  post_write_first_byte_wait     715.758
+  response_headers_at            716.146
+  first_body_read_at             716.198
+  last_body_read_at              1123.982
+  body_eof_at                    unavailable
+  body_closed_at                 1124.242
+  first_stream_event             716.380
+  ttft_first_text                837.466
+  last_text_at                   1064.205
+  text_span                      226.739
+  terminal_event                 1124.185
+  stream_duration                407.865
+  total                          1124.245
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         406.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_2c5fe8cb1f3246c7908f8bde52178875"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.428"
+  proxy_selected                 "false"
+  response_body_bytes_read       19454
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.007 / 4.535 / 93.744 / 0.018 / 46.458 (n=50)
+  api_token_usage                input=1704 output=55 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 48.922 (aggregate, includes startup/wait)
+
+Case "handled_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.131
+  connection_acquisition         0.000
+  request_write                  0.091
+  headers_write_at               0.177
+  request_write_finished_at      0.230
+  ttfb                           1041.115
+  post_write_first_byte_wait     1040.885
+  response_headers_at            1041.183
+  first_body_read_at             1041.229
+  last_body_read_at              1422.218
+  body_eof_at                    unavailable
+  body_closed_at                 1422.742
+  first_stream_event             1041.438
+  ttft_first_text                1188.919
+  last_text_at                   1403.891
+  text_span                      214.972
+  terminal_event                 1422.666
+  stream_duration                381.307
+  total                          1422.745
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         716.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_22ba8a37d8be43d6a1d81cf55c5fc8d1"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.331"
+  proxy_selected                 "false"
+  response_body_bytes_read       15390
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.008 / 6.142 / 145.857 / 0.024 / 55.592 (n=35)
+  api_token_usage                input=1735 output=40 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 28.115 (aggregate, includes startup/wait)
+
+Case "inventory"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.168
+  connection_acquisition         0.000
+  request_write                  0.144
+  headers_write_at               0.249
+  request_write_finished_at      0.323
+  ttfb                           486.009
+  post_write_first_byte_wait     485.686
+  response_headers_at            486.109
+  first_body_read_at             486.175
+  last_body_read_at              912.130
+  body_eof_at                    unavailable
+  body_closed_at                 912.403
+  first_stream_event             486.345
+  ttft_first_text                618.214
+  last_text_at                   898.840
+  text_span                      280.626
+  terminal_event                 912.336
+  stream_duration                426.060
+  total                          912.405
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         205.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_f671d0ee85614c4f9c3bf19feaaa242b"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.474"
+  proxy_selected                 "false"
+  response_body_bytes_read       19454
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.008 / 5.613 / 46.854 / 2.201 / 19.212 (n=50)
+  api_token_usage                input=1701 output=55 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 60.280 (aggregate, includes startup/wait)
+
+Case "ignored_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.163
+  connection_acquisition         0.001
+  request_write                  0.130
+  headers_write_at               0.263
+  request_write_finished_at      0.337
+  ttfb                           1137.261
+  post_write_first_byte_wait     1136.924
+  response_headers_at            1137.318
+  first_body_read_at             1137.356
+  last_body_read_at              1472.905
+  body_eof_at                    unavailable
+  body_closed_at                 1473.300
+  first_stream_event             1137.511
+  ttft_first_text                1256.760
+  last_text_at                   1467.123
+  text_span                      210.363
+  terminal_event                 1473.217
+  stream_duration                335.793
+  total                          1473.304
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         809.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_f7f43b59beea444bbc052c5842169e5e"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.407"
+  proxy_selected                 "false"
+  response_body_bytes_read       15390
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.008 / 6.010 / 109.283 / 0.011 / 85.225 (n=35)
+  api_token_usage                input=1721 output=40 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 27.150 (aggregate, includes startup/wait)
+
+Case "constant_value"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.170
+  connection_acquisition         0.001
+  request_write                  0.179
+  headers_write_at               0.275
+  request_write_finished_at      0.360
+  ttfb                           534.038
+  post_write_first_byte_wait     533.677
+  response_headers_at            534.208
+  first_body_read_at             534.249
+  last_body_read_at              926.319
+  body_eof_at                    unavailable
+  body_closed_at                 926.709
+  first_stream_event             534.561
+  ttft_first_text                660.865
+  last_text_at                   901.490
+  text_span                      240.624
+  terminal_event                 926.635
+  stream_duration                392.151
+  total                          926.713
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         242.000
+  requested_model                "gpt-6-luna"
+  response_model                 "gpt-6-luna"
+  requested_service_tier         "fast"
+  actual_service_tier            "fast"
+  server-timing                  "unavailable"
+  x-request-id                   "req_a74290af85ba472cb1b9339a371fa156"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.415"
+  proxy_selected                 "false"
+  response_body_bytes_read       15390
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.007 / 6.875 / 94.580 / 0.016 / 75.854 (n=35)
+  api_token_usage                input=1718 output=40 cached_input=1594 cache_write_tokens=0 reasoning_output=0
+  output_tokens_per_total_second 43.163 (aggregate, includes startup/wait)
+
+Batch comparison (ms; unavailable phases are not zero):
+case              status  reused  DNS     TCP    TLS     TTFB      first_text  provider  total     input/output/cache_read/cache_write/reasoning
+"feature_flags"   ok      false   96.955  5.915  19.481  1750.514  1883.641    853.000   2188.167  1699/55/0/1594/0
+"http_status"     ok      true    n/a     n/a    n/a     786.291   951.749     437.000   1216.717  1708/55/1594/0/0
+"returned_error"  ok      true    n/a     n/a    n/a     3998.490  4116.855    3381.000  4369.066  1737/40/1594/0/0
+"numbers"         ok      true    n/a     n/a    n/a     716.071   837.466     406.000   1124.245  1704/55/1594/0/0
+"handled_error"   ok      true    n/a     n/a    n/a     1041.115  1188.919    716.000   1422.745  1735/40/1594/0/0
+"inventory"       ok      true    n/a     n/a    n/a     486.009   618.214     205.000   912.405   1701/55/1594/0/0
+"ignored_error"   ok      true    n/a     n/a    n/a     1137.261  1256.760    809.000   1473.304  1721/40/1594/0/0
+"constant_value"  ok      true    n/a     n/a    n/a     534.038   660.865     242.000   926.713   1718/40/1594/0/0

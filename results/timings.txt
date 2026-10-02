@@ -1,0 +1,331 @@
+
+Case "feature_flags"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.265
+  connection_acquisition         127.787
+  request_write                  0.182
+  headers_write_at               128.226
+  request_write_finished_at      128.261
+  ttfb                           1784.106
+  post_write_first_byte_wait     1655.845
+  response_headers_at            1784.207
+  first_body_read_at             1784.264
+  last_body_read_at              2736.864
+  body_eof_at                    unavailable
+  body_closed_at                 2738.266
+  first_stream_event             1784.758
+  ttft_first_text                2308.181
+  last_text_at                   2735.974
+  text_span                      427.793
+  terminal_event                 2738.147
+  stream_duration                953.513
+  total                          2738.271
+  dns[1]_ms = 98.673; at_ms = 0.404; failed = false; address = ""
+  tcp_connect[1]_ms = 4.865; at_ms = 99.172; failed = false; address = "tcp 162.159.140.245:443"
+  tls[1]_ms = 23.806; at_ms = 104.109; failed = false; address = ""
+  provider_processing_ms         744.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_3518b23be70a4e43bda63d26874909ca"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "false"
+  connection_was_idle            "false"
+  connection_idle_ms             "unavailable"
+  proxy_selected                 "false"
+  response_body_bytes_read       32234
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.013 / 8.556 / 166.830 / 0.033 / 23.707 (n=50)
+  api_token_usage                input=1071 output=55 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 20.086 (aggregate, includes startup/wait)
+
+Case "http_status"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.225
+  connection_acquisition         0.000
+  request_write                  0.265
+  headers_write_at               0.411
+  request_write_finished_at      0.510
+  ttfb                           1077.601
+  post_write_first_byte_wait     1077.090
+  response_headers_at            1077.736
+  first_body_read_at             1077.821
+  last_body_read_at              1951.524
+  body_eof_at                    unavailable
+  body_closed_at                 1952.133
+  first_stream_event             1078.201
+  ttft_first_text                1459.755
+  last_text_at                   1857.663
+  text_span                      397.908
+  terminal_event                 1951.976
+  stream_duration                873.941
+  total                          1952.142
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         679.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_788169b766a8409a839a7d3f3cacc1b1"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.918"
+  proxy_selected                 "false"
+  response_body_bytes_read       32234
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.013 / 7.958 / 66.085 / 2.080 / 32.369 (n=50)
+  api_token_usage                input=1080 output=55 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 28.174 (aggregate, includes startup/wait)
+
+Case "returned_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.145
+  connection_acquisition         0.000
+  request_write                  0.163
+  headers_write_at               0.245
+  request_write_finished_at      0.320
+  ttfb                           1034.708
+  post_write_first_byte_wait     1034.388
+  response_headers_at            1034.890
+  first_body_read_at             1034.986
+  last_body_read_at              1693.746
+  body_eof_at                    unavailable
+  body_closed_at                 1694.111
+  first_stream_event             1035.508
+  ttft_first_text                1371.024
+  last_text_at                   1627.945
+  text_span                      256.922
+  terminal_event                 1694.049
+  stream_duration                658.606
+  total                          1694.115
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         666.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_91c1697c916748a7b06647d0ac0bd91b"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.440"
+  proxy_selected                 "false"
+  response_body_bytes_read       28170
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.011 / 7.341 / 96.261 / 0.034 / 36.776 (n=35)
+  api_token_usage                input=1109 output=40 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 23.611 (aggregate, includes startup/wait)
+
+Case "numbers"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.089
+  connection_acquisition         0.000
+  request_write                  0.116
+  headers_write_at               0.166
+  request_write_finished_at      0.216
+  ttfb                           562.310
+  post_write_first_byte_wait     562.094
+  response_headers_at            562.427
+  first_body_read_at             562.559
+  last_body_read_at              1308.196
+  body_eof_at                    unavailable
+  body_closed_at                 1309.478
+  first_stream_event             562.947
+  ttft_first_text                836.273
+  last_text_at                   1209.508
+  text_span                      373.236
+  terminal_event                 1309.343
+  stream_duration                746.539
+  total                          1309.486
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         268.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_a44eb55e39a343288693e436b1210656"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.293"
+  proxy_selected                 "false"
+  response_body_bytes_read       32234
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.010 / 7.465 / 73.553 / 0.129 / 33.617 (n=50)
+  api_token_usage                input=1076 output=55 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 42.001 (aggregate, includes startup/wait)
+
+Case "handled_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.233
+  connection_acquisition         0.001
+  request_write                  0.159
+  headers_write_at               0.344
+  request_write_finished_at      0.408
+  ttfb                           538.408
+  post_write_first_byte_wait     537.999
+  response_headers_at            538.597
+  first_body_read_at             538.682
+  last_body_read_at              1247.003
+  body_eof_at                    unavailable
+  body_closed_at                 1247.490
+  first_stream_event             539.109
+  ttft_first_text                925.995
+  last_text_at                   1174.838
+  text_span                      248.843
+  terminal_event                 1247.394
+  stream_duration                708.386
+  total                          1247.495
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         245.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_33ab74c29e3e4614b3077a952b1fe223"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "1.236"
+  proxy_selected                 "false"
+  response_body_bytes_read       28170
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.017 / 7.110 / 137.034 / 0.028 / 33.204 (n=35)
+  api_token_usage                input=1107 output=40 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 32.064 (aggregate, includes startup/wait)
+
+Case "inventory"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.120
+  connection_acquisition         0.000
+  request_write                  0.140
+  headers_write_at               0.206
+  request_write_finished_at      0.271
+  ttfb                           1098.700
+  post_write_first_byte_wait     1098.429
+  response_headers_at            1098.808
+  first_body_read_at             1098.886
+  last_body_read_at              1882.123
+  body_eof_at                    unavailable
+  body_closed_at                 1882.871
+  first_stream_event             1099.201
+  ttft_first_text                1388.105
+  last_text_at                   1808.401
+  text_span                      420.296
+  terminal_event                 1882.760
+  stream_duration                783.676
+  total                          1882.877
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         745.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_bb5e5f937b0249a7ab8617e2d7c63204"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.359"
+  proxy_selected                 "false"
+  response_body_bytes_read       32234
+  text_delta_count               51
+  inter_delta_min/mean/max/p50/p95_ms 0.015 / 8.406 / 88.763 / 2.164 / 34.083 (n=50)
+  api_token_usage                input=1073 output=55 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 29.211 (aggregate, includes startup/wait)
+
+Case "ignored_error"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.152
+  connection_acquisition         0.000
+  request_write                  0.159
+  headers_write_at               0.247
+  request_write_finished_at      0.327
+  ttfb                           685.257
+  post_write_first_byte_wait     684.931
+  response_headers_at            685.341
+  first_body_read_at             685.391
+  last_body_read_at              1627.308
+  body_eof_at                    unavailable
+  body_closed_at                 1627.956
+  first_stream_event             685.632
+  ttft_first_text                1286.309
+  last_text_at                   1548.570
+  text_span                      262.260
+  terminal_event                 1627.870
+  stream_duration                942.331
+  total                          1627.963
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         378.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_665da3935e324e6e95d931a964f31e03"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.480"
+  proxy_selected                 "false"
+  response_body_bytes_read       28166
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.018 / 7.493 / 155.665 / 0.035 / 26.203 (n=35)
+  api_token_usage                input=1093 output=40 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 24.571 (aggregate, includes startup/wait)
+
+Case "constant_value"
+
+Inference timings (ms; client-observed unless labeled provider):
+  sdk_to_transport               0.164
+  connection_acquisition         0.000
+  request_write                  0.199
+  headers_write_at               0.290
+  request_write_finished_at      0.379
+  ttfb                           498.235
+  post_write_first_byte_wait     497.855
+  response_headers_at            498.382
+  first_body_read_at             498.476
+  last_body_read_at              1165.733
+  body_eof_at                    unavailable
+  body_closed_at                 1166.418
+  first_stream_event             499.422
+  ttft_first_text                786.122
+  last_text_at                   1054.480
+  text_span                      268.357
+  terminal_event                 1166.263
+  stream_duration                667.004
+  total                          1166.427
+  dns                            unavailable
+  tcp_connect                    unavailable
+  tls                            unavailable
+  provider_processing_ms         212.000
+  server-timing                  "unavailable"
+  x-request-id                   "req_3a7e700d0a5a427ba5800c0ad29f812b"
+  http_protocol                  "HTTP/2.0"
+  peer                           "162.159.140.245:443"
+  connection_reused              "true"
+  connection_was_idle            "true"
+  connection_idle_ms             "0.510"
+  proxy_selected                 "false"
+  response_body_bytes_read       28166
+  text_delta_count               36
+  inter_delta_min/mean/max/p50/p95_ms 0.013 / 7.667 / 34.445 / 2.869 / 26.025 (n=35)
+  api_token_usage                input=1090 output=40 cached_input=0 reasoning_output=0
+  output_tokens_per_total_second 34.293 (aggregate, includes startup/wait)
+
+Batch comparison (ms; unavailable phases are not zero):
+case              status  reused  DNS     TCP    TLS     TTFB      first_text  provider  total     input/output/cached/reasoning
+"feature_flags"   ok      false   98.673  4.865  23.806  1784.106  2308.181    744.000   2738.271  1071/55/0/0
+"http_status"     ok      true    n/a     n/a    n/a     1077.601  1459.755    679.000   1952.142  1080/55/0/0
+"returned_error"  ok      true    n/a     n/a    n/a     1034.708  1371.024    666.000   1694.115  1109/40/0/0
+"numbers"         ok      true    n/a     n/a    n/a     562.310   836.273     268.000   1309.486  1076/55/0/0
+"handled_error"   ok      true    n/a     n/a    n/a     538.408   925.995     245.000   1247.495  1107/40/0/0
+"inventory"       ok      true    n/a     n/a    n/a     1098.700  1388.105    745.000   1882.877  1073/55/0/0
+"ignored_error"   ok      true    n/a     n/a    n/a     685.257   1286.309    378.000   1627.963  1093/40/0/0
+"constant_value"  ok      true    n/a     n/a    n/a     498.235   786.122     212.000   1166.427  1090/40/0/0

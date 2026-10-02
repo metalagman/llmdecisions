@@ -5,3 +5,8 @@
 .beads-credential-key
 .beads/proxieddb/
 *.gate.lock*
+
+.env
+.env.*
+!.env.example
+/llmdecisions

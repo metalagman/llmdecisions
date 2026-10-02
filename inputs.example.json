@@ -1,0 +1,137 @@
+[
+  {
+    "id": "feature_flags",
+    "input": {
+      "model": "local-model",
+      "state": {
+        "tls_enabled": false,
+        "debug_enabled": true
+      },
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Is TLS enabled in the supplied state?"
+        },
+        "q2": {
+          "type": "noul",
+          "instructions": "Is debug mode disabled in the supplied state?"
+        }
+      }
+    }
+  },
+  {
+    "id": "http_status",
+    "input": {
+      "model": "local-model",
+      "state": {
+        "status_code": 404,
+        "retry_count": 4
+      },
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Does the status code indicate a successful HTTP response (200 through 299)?"
+        },
+        "q2": {
+          "type": "noul",
+          "instructions": "Has at least one retry already occurred?"
+        }
+      }
+    }
+  },
+  {
+    "id": "returned_error",
+    "input": {
+      "model": "local-model",
+      "state": "path=\"pkg/worker_768.go\"\nside=RIGHT\nhunk=1\nspan=2-3\n1:func Run() error {\n2:result, err := doWork()\n3:if err != nil { return err }\n4:use(result)\n5:return nil\n6:}",
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Does the changed code violate this requirement? Changed code must handle or return errors from calls whose failure can affect correctness or safety."
+        }
+      }
+    }
+  },
+  {
+    "id": "numbers",
+    "input": {
+      "model": "local-model",
+      "state": [
+        -14,
+        3,
+        19,
+        -16,
+        1
+      ],
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Is the sum of the supplied numbers positive?"
+        },
+        "q2": {
+          "type": "noul",
+          "instructions": "Are all supplied numbers nonnegative?"
+        }
+      }
+    }
+  },
+  {
+    "id": "handled_error",
+    "input": {
+      "model": "local-model",
+      "state": "path=\"pkg/worker_585.go\"\nside=RIGHT\nhunk=1\nspan=2-3\n1:func Run() {\n2:result, err := doWork()\n3:if err != nil { log.Print(err); return }\n4:use(result)\n5:}",
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Does the changed code violate this requirement? Changed code must handle or return errors from calls whose failure can affect correctness or safety."
+        }
+      }
+    }
+  },
+  {
+    "id": "inventory",
+    "input": {
+      "model": "local-model",
+      "state": {
+        "stock": 20,
+        "order_quantity": 50
+      },
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Is the available stock sufficient to fulfill the order?"
+        },
+        "q2": {
+          "type": "noul",
+          "instructions": "Is the order quantity greater than zero?"
+        }
+      }
+    }
+  },
+  {
+    "id": "ignored_error",
+    "input": {
+      "model": "local-model",
+      "state": "path=\"pkg/worker_111.go\"\nside=RIGHT\nhunk=1\nspan=2-2\n1:func Run() {\n2:result, _ := doWork()\n3:use(result)\n4:}",
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Does the changed code violate this requirement? Changed code must handle or return errors from calls whose failure can affect correctness or safety."
+        }
+      }
+    }
+  },
+  {
+    "id": "constant_value",
+    "input": {
+      "model": "local-model",
+      "state": "path=\"pkg/worker_635.go\"\nside=RIGHT\nhunk=1\nspan=2-2\n1:func Run() {\n2:result := 72\n3:use(result)\n4:}",
+      "questions": {
+        "q1": {
+          "type": "noul",
+          "instructions": "Does the changed code violate this requirement? Changed code must handle or return errors from calls whose failure can affect correctness or safety."
+        }
+      }
+    }
+  }
+]
